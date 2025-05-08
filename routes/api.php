@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\UserRegistrationController;
+use App\Http\Controllers\Api\Device\DeviceRegistrationController;
+use App\Http\Controllers\Api\Device\SensorReadingController;
+use App\Http\Controllers\Api\Device\SensorRegistrationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +18,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('auth')->group(function () {
+    Route::post('register/store', [UserRegistrationController::class, 'store'])->name('api.user.regis');
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::resource('device', DeviceRegistrationController::class)->only(['store', 'show', 'destroy']);
+    Route::resource('sensor/type', SensorRegistrationController::class)->only(['store', 'show', 'destroy']);
+    Route::resource('sensor/reading', SensorReadingController::class)->only(['store', 'show']);
 });
